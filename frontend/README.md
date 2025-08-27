@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+# RD Product Matcher
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este projeto é a implementação do desafio técnico para a vaga de desenvolvedor front-end na RD Station. Trata-se de um motor de recomendação de produtos construído em uma aplicação React, que sugere soluções da RD Station com base nas preferências e funcionalidades selecionadas pelo usuário.
 
-## Available Scripts
+## Tech Stack
 
-In the project directory, you can run:
+-   **Frontend:** React.js, Tailwind CSS
+-   **Backend:** `json-server` para simular uma API REST
+-   **Gerenciamento:** Lerna (Monorepo), Yarn Workspaces
+-   **Testes:** Jest, React Testing Library
 
-### `yarn start`
+## Funcionalidades Implementadas
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-   **Motor de Recomendação:** Um serviço com lógica de pontuação (`scoring`) que avalia o "fit" de cada produto com as seleções do usuário.
+-   **Modos de Recomendação:** Suporte para os modos `SingleProduct` (retorna apenas o melhor resultado) e `MultipleProducts` (retorna uma lista ordenada de todos os produtos compatíveis).
+-   **Regra de Desempate:** Em caso de empate na pontuação, o serviço prioriza o **último** produto da lista original, conforme especificado nos critérios de aceite.
+-   **Interface Reativa:** A lista de recomendações é atualizada em tempo real após a submissão do formulário.
+-   **Testes Unitários:** A lógica de negócio no serviço de recomendação possui cobertura de testes > 90%, validando todos os cenários, incluindo empates e casos de borda.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Decisões de Arquitetura
 
-### `yarn test`
+-   **Monorepo:** A estrutura foi mantida com Lerna para gerenciar os pacotes `frontend` e `backend` de forma isolada, mas dentro de um único repositório, facilitando o desenvolvimento e a manutenção.
+-   **Gerenciamento de Estado:** Foi utilizada a abordagem nativa do React com os hooks `useState` e `useEffect`. Para a complexidade da aplicação, esta solução é mais do que suficiente, evitando a necessidade de bibliotecas externas como Redux ou Zustand e mantendo o projeto leve.
+-   **Serviço de Recomendação (`recommendation.service.js`):** A lógica de negócio foi centralizada em uma função pura, que recebe os produtos e as preferências e retorna um resultado, sem causar efeitos colaterais. Isso torna a lógica determinística e fácil de testar isoladamente.
+-   **Componentização:** A UI foi dividida em componentes pequenos e reutilizáveis (ex: `ProductCard`, `Checkbox`), seguindo as melhores práticas do React para garantir a manutenibilidade.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Como Executar o Projeto
 
-### `yarn build`
+### Pré-requisitos
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+-   Node.js (versão >= v18.3)
+-   Yarn (v1.22.x)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 1. Instalação
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Clone o repositório e, na pasta raiz, execute o script de instalação. Ele cuidará de instalar as dependências da raiz, do frontend e do backend.
 
-### `yarn eject`
+```bash
+# Clone o repositório
+git clone [https://github.com/guilhermeborba/rd-product-matcher.git](https://github.com/guilhermeborba/rd-product-matcher.git)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# Entre na pasta do projeto
+cd rd-product-matcher
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Rode o script de instalação
+./install.sh
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 2. Executando a Aplicação
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Para iniciar o ambiente de desenvolvimento (frontend + backend), execute o seguinte comando na raiz do projeto:
 
-## Learn More
+```bash
+yarn dev
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+-   O backend (`json-server`) estará disponível em `http://localhost:3001`.
+-   O frontend (React) abrirá automaticamente em `http://localhost:3000`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Rodando os Testes
 
-### Code Splitting
+Para executar os testes unitários do frontend, navegue até a pasta `frontend` e rode o comando de teste:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+cd frontend
+yarn test
