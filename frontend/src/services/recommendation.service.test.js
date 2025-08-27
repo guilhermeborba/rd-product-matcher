@@ -1,8 +1,10 @@
+// frontend/src/services/recommendation.service.test.js
+
 import recommendationService from './recommendation.service';
 import mockProducts from '../mocks/mockProducts';
 
 describe('recommendationService', () => {
-  test('Retorna recomendação correta para SingleProduct com base nas preferências selecionadas', () => {
+  test('should return the correct recommendation for SingleProduct based on selected preferences', () => {
     const formData = {
       selectedPreferences: ['Integração com chatbots'],
       selectedFeatures: ['Chat ao vivo e mensagens automatizadas'],
@@ -18,7 +20,7 @@ describe('recommendationService', () => {
     expect(recommendations[0].name).toBe('RD Conversas');
   });
 
-  test('Retorna recomendações corretas para MultipleProducts com base nas preferências selecionadas', () => {
+  test('should return correct recommendations for MultipleProducts based on selected preferences', () => {
     const formData = {
       selectedPreferences: [
         'Integração fácil com ferramentas de e-mail',
@@ -44,7 +46,7 @@ describe('recommendationService', () => {
     ]);
   });
 
-  test('Retorna apenas um produto para SingleProduct com mais de um produto de match', () => {
+  test('should return only one product for SingleProduct when there is more than one match', () => {
     const formData = {
       selectedPreferences: [
         'Integração fácil com ferramentas de e-mail',
@@ -66,7 +68,7 @@ describe('recommendationService', () => {
     expect(recommendations[0].name).toBe('RD Station Marketing');
   });
 
-  test('Retorna o último match em caso de empate para SingleProduct', () => {
+  test('should return the last match in case of a tie for SingleProduct', () => {
     const formData = {
       selectedPreferences: ['Automação de marketing', 'Integração com chatbots'],
       selectedRecommendationType: 'SingleProduct',
@@ -79,5 +81,37 @@ describe('recommendationService', () => {
 
     expect(recommendations).toHaveLength(1);
     expect(recommendations[0].name).toBe('RD Conversas');
+  });
+
+  test('should handle products without preferences or features correctly', () => {
+    const productsWithMissingData = [
+      ...mockProducts,
+      {
+        id: 5,
+        name: 'Incomplete Product 1',
+        category: 'Test',
+        features: ['Feature A'],
+      },
+      {
+        id: 6,
+        name: 'Incomplete Product 2',
+        category: 'Test',
+        preferences: ['Preference B'],
+      },
+    ];
+
+    const formData = {
+      selectedPreferences: ['Preference B'],
+      selectedFeatures: [],
+      selectedRecommendationType: 'MultipleProducts',
+    };
+
+    const recommendations = recommendationService.getRecommendations(
+      formData,
+      productsWithMissingData
+    );
+
+    expect(recommendations).toHaveLength(1);
+    expect(recommendations[0].name).toBe('Incomplete Product 2');
   });
 });
